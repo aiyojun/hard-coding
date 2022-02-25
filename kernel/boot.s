@@ -2,6 +2,7 @@ MAGIC equ 0x1badb002
 FLAGS equ 0x00
 
 section .text
+global startup
 
 ;grubBoot:
 	dd MAGIC
@@ -25,20 +26,31 @@ extern print8bytes
 extern print_int
 
 startup:
-	cld
+	; cld
 	; Here, I can't change value of esp! Why???
-	mov esp, 0
+	; And it's sometimes!!!
+	mov esp, 0x50000
 	mov ebp, esp
 
 	call clear
 	call print_logo
 
-	push 8
-	push L_MAG
+	push L_START_LEN
+	push L_START
 	call print
 	add esp, 0x8
 	xor eax, eax
-	mov eax, 0x1badb002
+	mov eax, startup
+	push eax
+	call print8bytes
+	add esp, 0x4
+
+	push 6
+	push L_ESP
+	call print
+	add esp, 0x8
+	xor eax, eax
+	mov eax, esp
 	push eax
 	call print8bytes
 	add esp, 0x4
@@ -63,7 +75,7 @@ startup:
 	call print8bytes
 	add esp, 0x4
 
-	push 6
+	push L_CS_LEN
 	push L_CS
 	call print
 	add esp, 0x8
@@ -152,6 +164,7 @@ startup:
 
 section .data
 L_CS:  db " cs:0x"
+L_CS_LEN equ $ - L_CS
 L_SS:  db " ss:0x"
 L_DS:  db " ds:0x"
 L_ES:  db " es:0x"
@@ -161,6 +174,8 @@ L_EBP: db "ebp:0x"
 L_CR0: db "cr0:0x"
 L_A20: db "A20:0x"
 L_MAG: db "MAGIC:0x"
+L_START: db "start address:0x"
+L_START_LEN equ $ - L_START
 
 ask_addr_begin equ 0x8000
 
