@@ -50,6 +50,7 @@ qemu-system-x86_64 -kernel arch/x86/boot/bzImage
 ### 上述命令，会将printk日志内容输出到vga显示器上(25行*80列空间)
 qemu-system-x86_64 -kernel arch/x86/boot/bzImage --append "console=ttyS0,9600"
 ### 该命令，会将printk日志输出到serial串口上。
+### 波特率，115200也可，主要是qemu只要你设置了就行。
 
 ```
 
